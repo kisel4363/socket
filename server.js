@@ -31,28 +31,28 @@ io.on('connection', (socket) => {
     users.push(user)
     socket.emit("connection", user);
 
-    socket.on('offer', (offer, userid) => {
-        console.log('Received offer:', offer);
+    socket.on('offer', (fromUser, toUser, offer) => {
+        console.log(`Offer sent from ${fromUser} to ${toUser}`);
         // Aquí puedes manejar la oferta y generar una respuesta
         // Por ahora, simplemente reenviamos la oferta a todos los demás clientes
         let id = ""
         for (let i of users){
-            if ( i.username == userid )
+            if ( i.username == toUser )
                 id = i.id;
         }
-        socket.to(id).emit('offer', offer);
+        socket.to(id).emit('offer', fromUser, offer);
     });
 
-    socket.on('answer', (answer, userid) => {
-        console.log('Received answer:', answer);
+    socket.on('answer', (fromUser, toUser, answer) => {
+        console.log(`Answer sent from ${fromUser} to ${toUser}`);
         // Aquí puedes manejar la respuesta
         // Por ahora, simplemente reenviamos la respuesta a todos los demás clientes
         let id = ""
         for (let i of users){
-            if ( i.username == userid )
+            if ( i.username == toUser )
                 id = i.id;
         }
-        socket.to(id).emit('answer', answer);
+        socket.to(id).emit('answer', fromUser, answer);
     });
 
     socket.on('disconnect', () => {
